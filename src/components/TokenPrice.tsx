@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTokenPrices } from "@/hooks/useTokenPrice";
+import { useTokenHistory, PricePoint } from "@/hooks/useTokenHistory";
 import {
   LineChart,
   Line,
@@ -11,13 +12,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-type PriceHistory = { timestamp: number; price: number }[];
-
 const TOKEN_MAP: Record<string, string> = {
-  ETH: "ETH",
-  BTC: "BTC",
-  LINK: "LINK",
-  SOL: "SOL",
+  ETH: "ethereum",
+  BTC: "bitcoin",
+  LINK: "chainlink",
+  SOL: "solana",
 };
 
 const TIME_RANGES = [
@@ -32,43 +31,15 @@ const TIME_RANGES = [
 export default function TokenPricesCard() {
   const prices = useTokenPrices();
   const [selectedToken, setSelectedToken] = useState<string>("ETH");
-  const [history, setHistory] = useState<PriceHistory>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [timeRange, setTimeRange] = useState<string>("7"); // default 7 days
+  const [timeRange, setTimeRange] = useState<string>("7");
 
+  const { history, loading } = useTokenHistory(selectedToken, timeRange);
   const tokenList = Object.keys(prices);
-
-  useEffect(() => {
-    const fetchHistory = async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/coin-history?tokenId=${selectedToken}&days=${timeRange}`);
-        if (!res.ok) throw new Error(`${selectedToken} fetch failed`);
-        const data = await res.json();
-
-        const formatted: PriceHistory = (data.prices || []).map(
-          (p: { timestamp: number; price: number }) => ({
-            timestamp: p.timestamp,
-            price: p.price,
-          })
-        );
-
-        setHistory(formatted);
-      } catch (err) {
-        console.error("Failed to fetch token history:", err);
-        setHistory([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHistory();
-  }, [selectedToken, timeRange]);
 
   return (
     <div className="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-md max-w-md mx-auto">
       <h2 className="text-xl font-semibold mb-4 text-center">
-        Token Prices (Chainlink Oracles)
+        Token Prices (Chainlink + CoinGecko)
       </h2>
 
       <div className="mb-4 flex gap-2 items-center">

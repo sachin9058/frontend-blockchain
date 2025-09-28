@@ -5,29 +5,33 @@ export type PricePoint = {
   price: number;
 };
 
-export async function fetchTokenHistory(tokenId: string, days: string) {
-  try {
-    const res = await fetch(`/api/coin-history?tokenId=${tokenId}&days=${days}`);
-    if (!res.ok) throw new Error("Failed to fetch history");
-    return await res.json();
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-}
-
 export function useTokenHistory(tokenId: string, days: string) {
   const [history, setHistory] = useState<PricePoint[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
-    fetchTokenHistory(tokenId, days).then((data) => {
-      if (mounted) {
-        setHistory(data);
-        setLoading(false);
+
+    const fetchHistory = async (retries = 3) => {
+      setLoading(true);
+      for (let i = 0; i < retries; i++) {
+        try {
+          const res = await fetch(`/api/coin-history?tokenId=${tokenId}&days=${days}`);
+          if (!res.ok) throw new Error(`Fetch failed (${res.status})`);
+          const data = await res.json();
+          if (mounted) setHistory(data.prices || []);
+          break;
+        } catch (err) {
+          console.error(`${tokenId} fetch attempt ${i + 1} failed`, err);
+          if (i === retries - 1 && mounted) setHistory([]);
+          await new Promise((r) => setTimeout(r, 500));
+        }
       }
-    });
+      if (mounted) setLoading(false);
+    };
+
+    fetchHistory();
+
     return () => {
       mounted = false;
     };
