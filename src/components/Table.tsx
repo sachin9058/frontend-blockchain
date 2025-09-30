@@ -1,111 +1,102 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { TokenRow, TokenRowSkeleton } from "./TokenRow"; // 👈 IMPORT the new components
 
+// ✅ EXPORT the types so other files can use them
 export type PricePoint = {
   timestamp: number;
   price: number;
 };
 
-const TOKEN_LIST = ["BTC", "ETH", "LINK", "SOL"] as const;
+export const TOKEN_LIST = ["BTC", "ETH", "LINK", "SOL"] as const;
+export type Token = typeof TOKEN_LIST[number];
 
-export function TokenTable() {
-  const [prices, setPrices] = useState<Record<string, number>>({});
-  const [histories, setHistories] = useState<Record<string, PricePoint[]>>({});
+// The Main Component
+export function TokenDisplay({ onTokenSelect }: { onTokenSelect: (token: Token) => void }) {
+  const [prices, setPrices] = useState<Record<Token, number>>({} as any);
+  const [histories, setHistories] = useState<Record<Token, PricePoint[]>>({} as any);
+  const [errors, setErrors] = useState<Record<Token, string>>({} as any);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
-
+    // Your fetchData logic remains exactly the same.
     async function fetchData() {
-      const pricesResult: Record<string, number> = {};
-      const historiesResult: Record<string, PricePoint[]> = {};
+        let mounted = true;
+        const pricesResult: Partial<Record<Token, number>> = {};
+        const historiesResult: Partial<Record<Token, PricePoint[]>> = {};
+        const errorsResult: Partial<Record<Token, string>> = {};
 
-      await Promise.all(
-        TOKEN_LIST.map(async (token) => {
-          try {
-            // Fetch current price
-            const priceRes = await fetch(
-              `/api/coin-history?tokenId=${token}&days=1`
-            );
-            const priceData = await priceRes.json();
-            const lastPrice = priceData.prices?.at(-1)?.price || 0;
-            pricesResult[token] = lastPrice;
+        await Promise.all(
+            TOKEN_LIST.map(async (token) => {
+                try {
+                    const priceRes = await fetch(`/api/coin-history?tokenId=${token}&days=1`);
+                    if (!priceRes.ok) throw new Error(`Failed to fetch price for ${token}`);
+                    const priceData = await priceRes.json();
+                    if (priceData.error) throw new Error(priceData.error);
+                    const lastPrice = priceData.prices?.at(-1)?.price || 0;
+                    pricesResult[token] = lastPrice;
 
-            // Fetch full 7-day history
-            const histRes = await fetch(
-              `/api/coin-history?tokenId=${token}&days=7`
-            );
-            const histData = await histRes.json();
-            historiesResult[token] = histData.prices || [];
-          } catch (err) {
-            console.error(token, err);
-            pricesResult[token] = 0;
-            historiesResult[token] = [];
-          }
-        })
-      );
-
-      if (mounted) {
-        setPrices(pricesResult);
-        setHistories(historiesResult);
-        setLoading(false);
-      }
+                    const histRes = await fetch(`/api/coin-history?tokenId=${token}&days=7`);
+                    if (!histRes.ok) throw new Error(`Failed to fetch history for ${token}`);
+                    const histData = await histRes.json();
+                    if (histData.error) throw new Error(histData.error);
+                    historiesResult[token] = histData.prices || [];
+                } catch (err: any) {
+                    errorsResult[token] = err.message || "Failed to fetch";
+                }
+            })
+        );
+        if (mounted) {
+            setPrices(pricesResult as Record<Token, number>);
+            setHistories(historiesResult as Record<Token, PricePoint[]>);
+            setErrors(errorsResult as Record<Token, string>);
+            setLoading(false);
+        }
     }
-
     fetchData();
-
-    return () => {
-      mounted = false;
-    };
+    return () => { /* cleanup */ };
   }, []);
 
-  if (loading) return <p>Loading tokens...</p>;
-
   return (
-    <Table>
-      <TableCaption>Live Token Prices + 7-Day History</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Token</TableHead>
-          <TableHead>Current Price</TableHead>
-          <TableHead>7-Day History</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {TOKEN_LIST.map((token) => (
-          <TableRow key={token}>
-            <TableCell>{token}/USD</TableCell>
-            <TableCell>${prices[token]?.toFixed(2)}</TableCell>
-            <TableCell>
-              <div className="max-h-40 overflow-y-auto">
-                {histories[token]?.map((p) => (
-                  <div key={p.timestamp}>
-                    {new Date(p.timestamp).toLocaleDateString()} - $
-                    {p.price.toFixed(2)}
-                  </div>
-                ))}
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-      <TableFooter>
-        <TableRow>
-          <TableCell colSpan={2}>Tokens Loaded</TableCell>
-          <TableCell>{TOKEN_LIST.length}</TableCell>
-        </TableRow>
-      </TableFooter>
-    </Table>
+    <div className="min-h-screen w-full bg-black text-white flex justify-center p-4 pt-10">
+      <div className="absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"></div>
+      
+      <div className="w-full max-w-4xl">
+        <h1 className="text-4xl font-bold text-center mb-2 bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-400">
+            Market Overview
+        </h1>
+        <p className="text-center text-zinc-400 mb-8">Live prices and 7-day trends</p>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-lg">
+            <div className="grid grid-cols-[auto,1fr,1fr,100px] items-center gap-4 p-4 border-b border-white/10 text-sm font-semibold text-zinc-400">
+                <div className="pl-14">Asset</div>
+                <div></div>
+                <div className="text-right">Price</div>
+                <div className="text-center">7D Trend</div>
+            </div>
+            <div>
+                 {loading ? (
+                    <>
+                        <TokenRowSkeleton />
+                        <TokenRowSkeleton />
+                        <TokenRowSkeleton />
+                        <TokenRowSkeleton />
+                    </>
+                ) : (
+                    TOKEN_LIST.map((token) => (
+                        <TokenRow
+                            key={token}
+                            token={token}
+                            price={prices[token]}
+                            history={histories[token] || []}
+                            error={errors[token]}
+                        />
+                    ))
+                )}
+            </div>
+        </div>
+      </div>
+    </div>
   );
 }

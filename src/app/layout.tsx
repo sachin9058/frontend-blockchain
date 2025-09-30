@@ -11,6 +11,7 @@ import {
   SignedOut,
   UserButton,
 } from '@clerk/nextjs'
+import { ThemeProvider } from "@/components/theme-provider";
 
 
 const geistSans = Geist({
@@ -37,12 +38,18 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head />
       <body>
-        <ClerkProvider>
-          <WalletProvider>
-            <NavbarDemo />
-            <main>{children}</main>
-          </WalletProvider>
-        </ClerkProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange>
+          <ClerkProvider>
+            <WalletProvider>
+              <NavbarDemo />
+              <main>{children}</main>
+            </WalletProvider>
+          </ClerkProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

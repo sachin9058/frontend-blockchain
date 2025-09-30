@@ -1,8 +1,7 @@
-// hooks/useTokenPrices.ts
 "use client";
 
 import { useEffect, useState } from "react";
-import { Contract, JsonRpcProvider } from "ethers";
+import { Contract, JsonRpcProvider, type BigNumberish } from "ethers";
 
 const FEEDS: Record<string, string> = {
   ETH: "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419", // ETH/USD
@@ -47,10 +46,13 @@ export function useTokenPrices(
         const results: Record<string, number> = {};
         for (const [symbol, address] of Object.entries(FEEDS)) {
           const contract = new Contract(address, ABI, provider);
-          const decimals: bigint = await contract.decimals();
+          const decimals = Number(await contract.decimals());
           const roundData = await contract.latestRoundData();
-          const price =
-            Number(roundData.answer) / 10 ** Number(decimals);
+
+          // Convert BigInt to number safely
+          const answer = BigInt(roundData.answer);
+          const price = Number(answer) / 10 ** decimals;
+
           results[symbol] = price;
         }
         setPrices(results);

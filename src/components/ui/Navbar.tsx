@@ -16,16 +16,20 @@ import { SignIn, useClerk, UserButton, useUser } from '@clerk/nextjs'
 export function NavbarDemo() {
   const navItems = [
     {
-      name: "Pricing",
-      link: "/",
+      name : "Home",
+      link : "/"
     },
     {
-      name: "Wallets",
+      name: "Pricing",
+      link: "/pricing",
+    },
+    {
+      name: "Wallet",
       link: "/wallets",
     },
     {
       name: "Contact",
-      link: "#contact",
+      link: "/contact",
     },
   ];
 
@@ -35,11 +39,11 @@ export function NavbarDemo() {
 
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full bg-black text-white">
       <Navbar>
         <NavBody>
           <NavbarLogo />
-          <NavItems items={navItems} />
+          <NavItems className="text-white" items={navItems} />
           <div className="flex items-center gap-4">
             {isSignedIn ? 
                 <UserButton/>
@@ -74,23 +78,25 @@ export function NavbarDemo() {
                 key={`mobile-link-${idx}`}
                 href={item.link}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="relative text-neutral-600 dark:text-neutral-300"
+                className="relative text-neutral-300"
               >
                 <span className="block">{item.name}</span>
               </a>
             ))}
             <div className="flex w-full flex-col gap-4">
-              {isSignedIn ? 
+      
+               {isSignedIn ? 
                 <UserButton/>
                :
                <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => openSignIn()}
                 variant="primary"
                 className="w-full"
               >
                 Login
               </NavbarButton>
             }
+            
             </div>
           </MobileNavMenu>
         </MobileNav>
