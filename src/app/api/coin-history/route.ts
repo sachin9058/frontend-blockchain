@@ -1,4 +1,4 @@
-// src/app/api/coin-history/route.ts
+
 import { NextResponse } from "next/server";
 
 export type PricePoint = {
@@ -13,7 +13,7 @@ const TOKEN_MAP: Record<string, string> = {
   SOL: "solana",
 };
 
-let cache: Record<string, { data: PricePoint[]; timestamp: number }> = {};
+const cache: Record<string, { data: PricePoint[]; timestamp: number }> = {};
 const CACHE_DURATION = 5 * 60_000; // 5 minutes
 
 async function fetchWithRetry(
@@ -64,7 +64,6 @@ export async function GET(req: Request) {
 
   const cacheKey = `${tokenIdParam}-${days}`;
 
-  // ✅ Serve cached data if fresh
   if (
     cache[cacheKey] &&
     Date.now() - cache[cacheKey].timestamp < CACHE_DURATION
@@ -96,7 +95,6 @@ export async function GET(req: Request) {
   } catch (err) {
     const message = (err as Error)?.message || "Unknown error";
 
-    // ✅ Fallback to stale cache
     if (cache[cacheKey]) {
       return NextResponse.json({
         prices: cache[cacheKey].data,

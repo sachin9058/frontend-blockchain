@@ -31,7 +31,7 @@ const useTokenPrices = () => ({
 });
 const useTokenHistory = (token: string, timeRange: string) => {
     const generateHistory = () => {
-        let data = [];
+        const data = [];
         let price = Math.random() * 1000 + 3000;
         for (let i = 0; i < Number(timeRange) * 24; i++) {
             data.push({

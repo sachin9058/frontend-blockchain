@@ -7,6 +7,7 @@ import {
   useScroll,
   useMotionValueEvent,
 } from "motion/react";
+import Link from "next/link";
 
 import React, { useRef, useState } from "react";
 
@@ -232,12 +233,9 @@ export const MobileNavToggle = ({
 
 export const NavbarLogo = () => {
   return (
-    <a
-      href="/"
-      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
-    >
+    <Link href="/"  className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black" >
       <span className="font-medium text-xl text-white ">Cryptobyte</span>
-    </a>
+    </Link>
   );
 };
 
