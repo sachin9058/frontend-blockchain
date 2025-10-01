@@ -27,10 +27,6 @@ export function NavbarDemo() {
       name: "Wallet",
       link: "/wallets",
     },
-    {
-      name: "Contact",
-      link: "/contact",
-    },
   ];
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
