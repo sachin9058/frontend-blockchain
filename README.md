@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Web3 Wallet Dashboard  
 
-## Getting Started
+A decentralized Web3 application built with **Next.js**, **TypeScript**, and **TailwindCSS** that enables users to connect their crypto wallets, view token balances, and interact securely with blockchain networks in real-time.  
 
-First, run the development server:
+
+
+## ✨ Features Implemented  
+
+- 🔐 **Wallet Integration**  
+  - Connect / Disconnect wallet functionality (via MetaMask / other EVM-compatible wallets).  
+  - Secure session management using **Clerk** authentication.  
+
+- 💰 **Token Balance Display**  
+  - Fetches and displays token balances for popular tokens like ETH, BTC, LINK, SOL, and more.  
+  - Real-time updates using **on-chain data**.  
+
+- 📡 **Real-Time Functionality**  
+  - Live updates of balances via blockchain calls.  
+  - Optimized with hooks for smooth user experience.  
+
+- 🎨 **User Interface**  
+  - Built with **Tailwind CSS** for a responsive, modern UI.  
+  - Includes wallet dashboard with balances, connection status, and user-friendly controls.  
+
+---
+
+## 🔗 Oracles and External Integrations  
+
+- ✅ **Price Oracles**  
+  - Integrated with Chainlink to fetch **real-time token prices**.  
+
+- ✅ **Authentication**  
+  - Uses **Clerk** for secure user login and role-based access.  
+
+---
+
+## 🛠️ Tech Stack  
+
+- **Framework**: Next.js (App Router, TypeScript)  
+- **UI**: TailwindCSS + shadcn/ui components  
+- **Blockchain**: Ethers.js / Web3.js (for wallet + balance fetching)  
+- **Auth**: Clerk  
+- **Oracles**: Chainlink  
+
+---
+
+## 🚀 Getting Started  
+
+### Prerequisites  
+- Node.js (>= 18)  
+- MetaMask or any Web3 wallet installed  
+
+### Installation  
 
 ```bash
+# Clone the repo
+git clone https://github.com/your-username/web3-wallet-dashboard.git
+
+# Navigate to project
+cd web3-wallet-dashboard
+
+# Install dependencies
+npm install
+
+# Start dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000 to see the app.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🎥
+Demo Video
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+https://github.com/user-attachments/assets/91075c9e-43e8-4bc8-a777-ca8928d759df
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+📌 Future Improvements
+ Add transaction history tracking
 
-## Learn More
+ Support multi-chain balances (Polygon, BSC, etc.)
 
-To learn more about Next.js, take a look at the following resources:
+ Deploy smart contracts for staking / rewards
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+ Improve real-time updates with WebSockets
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+🧑‍💻 Author
+Sachin Kumar
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
