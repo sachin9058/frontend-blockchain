@@ -3,6 +3,7 @@
 A decentralized Web3 application built with **Next.js**, **TypeScript**, and **TailwindCSS** that enables users to connect their crypto wallets, view token balances, and interact securely with blockchain networks in real-time.  
 
 
+## Live URl:- https://frontend-blockchain-ps.vercel.app/
 
 ## ✨ Features Implemented  
 
@@ -70,6 +71,8 @@ Open http://localhost:3000 to see the app.
 Demo Video
 
 https://github.com/user-attachments/assets/91075c9e-43e8-4bc8-a777-ca8928d759df
+
+Live URl:- https://frontend-blockchain-ps.vercel.app/
 
 📌 Future Improvements
  Add transaction history tracking
