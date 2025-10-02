@@ -1,11 +1,14 @@
 "use client";
 
+import { useClerk, useUser } from '@clerk/nextjs';
 import { ShieldCheck, Wallet } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
 export default function HomePage() {
   const router = useRouter();
+  const { isSignedIn } = useUser()
+  const{openSignIn} = useClerk()
   
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black text-white">
@@ -26,7 +29,7 @@ export default function HomePage() {
         </p>
         <div className="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
           <button 
-            onClick={() => router.push("/wallets")} 
+            onClick={() =>{isSignedIn ?  router.push("/wallets") : openSignIn(); router.push("/wallets")}} 
             className="flex items-center gap-2 px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-zinc-200 transition-colors"
           >
             Your Wallet 
